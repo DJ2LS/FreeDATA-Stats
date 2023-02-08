@@ -50,17 +50,10 @@ return $.getJSON({
 
 getData().then(function(data){
 
-
-
-	
-
-
-
-
-const chartSNRvsSPEED = document.getElementById('chartSNRvsSPEED');
-const chartSNRvsNACK = document.getElementById('chartSNRvsNACK');
-const speedOverTime = document.getElementById('chartSpeedOverTime');
-const chartSNRvsFILESIZE = document.getElementById('chartSNRvsFILESIZE');
+    const chartSNRvsSPEED = document.getElementById('chartSNRvsSPEED');
+    const chartSNRvsNACK = document.getElementById('chartSNRvsNACK');
+    const chartSNRvsFILESIZE = document.getElementById('chartSNRvsFILESIZE');
+    const speedOverTime = document.getElementById('chartSpeedOverTime');
 
 
     // cleanup
@@ -136,14 +129,13 @@ new Chart(chartSNRvsNACK, {
 
     // sort snr_vs_filesize lists
     snr_vs_filesize.sort(function(a, b) {
-        return a.timestamp - b.timestamp;
+        return a.avgsnr - b.avgsnr;
     });
 
     // split snr_vs_filesize lists
     for (let k = 0; k < snr_vs_filesize.length; k++) {
-        avgsnr_list[k] = format_time(snr_vs_filesize[k].timestamp);
-        filesize_list[k] = snr_vs_filesize[k].bytesperminute;
-
+        avgsnr_list[k] = snr_vs_filesize[k].avgsnr;
+        filesize_list[k] = snr_vs_filesize[k].filesize;
     }
 
     new Chart(chartSNRvsFILESIZE, {
@@ -151,7 +143,7 @@ new Chart(chartSNRvsNACK, {
     data: {
             labels: avgsnr_list,
         datasets: [{
-            label: 'SPEED over TIME',
+            label: 'SNR vs FILESIZE',
             data: filesize_list,
             borderWidth: 1
             }]
