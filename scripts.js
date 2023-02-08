@@ -62,7 +62,6 @@ const speedOverTime = document.getElementById('chartSpeedOverTime');
     // cleanup
     cleanup();
 
-
     // sort snr_vs_bytesperminute lists
     snr_vs_bytesperminute.sort(function(a, b) {
         return a.avgsnr - b.avgsnr;
@@ -111,7 +110,7 @@ const speedOverTime = document.getElementById('chartSpeedOverTime');
 new Chart(chartSNRvsNACK, {
 	type: 'line',
 	data: {
-		labels: bytesperminute_list,
+        labels: avgsnr_list,
 		datasets: [{
 			label: 'SNR vs NACK',
 			data: nack_list,
