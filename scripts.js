@@ -8,6 +8,7 @@ let snr_vs_nack = [];
 let snr_vs_bytesperminute = [];
 let time_vs_bytesperminute = [];
 let snr_vs_filesize = [];
+let speed_vs_filesize = [];
 
 function getData(){
 
@@ -41,6 +42,8 @@ return $.getJSON({
         // create snr_vs_filesize
         snr_vs_filesize.push({'filesize': filesize, 'avgsnr': avgsnr});
 
+        // create snr_vs_filesize
+        speed_vs_filesize.push({'filesize': filesize, 'bytesperminute': bytesperminute});
 	}
 	}
 });
@@ -53,6 +56,8 @@ getData().then(function(data){
     const chartSNRvsSPEED = document.getElementById('chartSNRvsSPEED');
     const chartSNRvsNACK = document.getElementById('chartSNRvsNACK');
     const chartSNRvsFILESIZE = document.getElementById('chartSNRvsFILESIZE');
+    const chartSPEEDvsFILESIZE = document.getElementById('chartSPEEDvsFILESIZE');
+
     const speedOverTime = document.getElementById('chartSpeedOverTime');
 
 
@@ -159,7 +164,39 @@ new Chart(chartSNRvsNACK, {
 
 
 
+    // cleanup
+    cleanup();
 
+    // sort time_vs_bytesperminute lists
+    speed_vs_filesize.sort(function(a, b) {
+        return a.filesize - b.filesize;
+    });
+
+    // split snr_vs_bytesperminute lists
+    for (let k = 0; k < speed_vs_filesize.length; k++) {
+        filesize_list[k] = speed_vs_filesize[k].filesize;
+        bytesperminute_list[k] = speed_vs_filesize[k].bytesperminute;
+
+    }
+
+    new Chart(chartSPEEDvsFILESIZE, {
+        type: 'line',
+    data: {
+            labels: filesize_list,
+        datasets: [{
+            label: 'SPEED vs FILESIZE',
+            data: bytesperminute_list,
+            borderWidth: 1
+            }]
+    },
+    options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 
 	
     // cleanup
