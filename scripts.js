@@ -1,14 +1,12 @@
-var avgsnr_list = [];
-var nack_list = [];
-var timestamp_list = [];
-var bytesperminute_list = [];
-var filesize_list = [];
+let avgsnr_list = [];
+let nack_list = [];
+let timestamp_list = [];
+let bytesperminute_list = [];
+let filesize_list = [];
 
-var snr_vs_nack = [];
-var snr_vs_bytesperminute = [];
-var time_vs_bytesperminute = [];
-
-
+let snr_vs_nack = [];
+let snr_vs_bytesperminute = [];
+let time_vs_bytesperminute = [];
 
 
 function getData(){
@@ -23,13 +21,13 @@ return $.getJSON({
 	success: 
 	function(data) {
 	
-	for (var i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
 
-		var avgsnr = data[i]['avgsnr'];	
-		var nack = data[i]['nacks'];
-		var timestamp = data[i]['timestamp'];
-		var filesize = data[i]['filesize'];		
-		var bytesperminute = data[i]['bytesperminute'];
+		let avgsnr = data[i]['avgsnr'];
+        let nack = data[i]['nacks'];
+        let timestamp = data[i]['timestamp'];
+        let filesize = data[i]['filesize'];
+        let bytesperminute = data[i]['bytesperminute'];
 		
 		// create snr_vs_nack
 		snr_vs_nack.push({'avgsnr': avgsnr, 'nack': nack});
@@ -45,7 +43,7 @@ return $.getJSON({
 	}
 });
 
-};
+}
 
 
 getData().then(function(data){
@@ -57,22 +55,26 @@ getData().then(function(data){
 
 
 
-const ctx1 = document.getElementById('myChart1');
-const ctx2 = document.getElementById('myChart2');
-const speedOverTime = document.getElementById('speedOverTime');
+const chartSNRvsSPEED = document.getElementById('chartSNRvsSPEED');
+const chartSNRvsNACK = document.getElementById('chartSNRvsNACK');
+const speedOverTime = document.getElementById('chartSpeedOverTime');
 
-	// sort snr_vs_nack lists
-	snr_vs_nack.sort(function(a, b) {
-		return a.avgsnr > b.avgsnr;
-	});
-		
-	// split snr_vs_nack lists
-	for (var k = 0; k < snr_vs_nack.length; k++) {
-    	avgsnr_list[k] = snr_vs_nack[k].avgsnr;
-    	nack_list[k] = snr_vs_nack[k].nack;
-	}
+    // cleanup
+    cleanup();
 
-new Chart(ctx1, {
+
+    // sort snr_vs_bytesperminute lists
+    snr_vs_bytesperminute.sort(function(a, b) {
+        return a.avgsnr - b.avgsnr;
+    });
+
+    // split snr_vs_bytesperminute lists
+    for (let k = 0; k < snr_vs_bytesperminute.length; k++) {
+        avgsnr_list[k] = snr_vs_bytesperminute[k].avgsnr;
+        bytesperminute_list[k] = snr_vs_bytesperminute[k].bytesperminute;
+    }
+
+    new Chart(chartSNRvsSPEED, {
 	type: 'bar',
 	data: {
 		labels: avgsnr_list,
@@ -92,19 +94,21 @@ new Chart(ctx1, {
 });
 
 	
+    // cleanup
+    cleanup();
+
+    // sort snr_vs_nack lists
+    snr_vs_nack.sort(function(a, b) {
+        return a.avgsnr > b.avgsnr;
+    });
+
+    // split snr_vs_nack lists
+    for (let k = 0; k < snr_vs_nack.length; k++) {
+        avgsnr_list[k] = snr_vs_nack[k].avgsnr;
+        nack_list[k] = snr_vs_nack[k].nack;
+    }
 	
-		// sort snr_vs_bytesperminute lists
-	snr_vs_bytesperminute.sort(function(a, b) {
-		return a.avgsnr - b.avgsnr;
-	});
-		
-	// split snr_vs_bytesperminute lists
-	for (var k = 0; k < snr_vs_bytesperminute.length; k++) {
-    	avgsnr_list[k] = snr_vs_bytesperminute[k].avgsnr;
-    	bytesperminute_list[k] = snr_vs_bytesperminute[k].bytesperminute;
-	}
-	
-new Chart(ctx2, {
+new Chart(chartSNRvsNACK, {
 	type: 'line',
 	data: {
 		labels: bytesperminute_list,
@@ -125,15 +129,16 @@ new Chart(ctx2, {
 	
 
 	
-	
-	
+    // cleanup
+    cleanup();
+
 	// sort time_vs_bytesperminute lists
 	time_vs_bytesperminute.sort(function(a, b) {
 		return a.timestamp - b.timestamp;
 	});
 
 	// split snr_vs_bytesperminute lists
-	for (var k = 0; k < time_vs_bytesperminute.length; k++) {
+	for (let k = 0; k < time_vs_bytesperminute.length; k++) {
 		timestamp_list[k] = format_time(time_vs_bytesperminute[k].timestamp);
 		bytesperminute_list[k] = time_vs_bytesperminute[k].bytesperminute;
 		
@@ -176,4 +181,13 @@ function format_time(s) {
   });
   
   return dtFormat.format(new Date(s * 1e3));
+}
+
+
+function cleanup(){
+    avgsnr_list = [];
+    nack_list = [];
+    timestamp_list = [];
+    bytesperminute_list = [];
+    filesize_list = [];
 }
