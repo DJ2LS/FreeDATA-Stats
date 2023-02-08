@@ -134,12 +134,12 @@ new Chart(chartSNRvsNACK, {
     // cleanup
     cleanup();
 
-    // sort time_vs_bytesperminute lists
+    // sort snr_vs_filesize lists
     snr_vs_filesize.sort(function(a, b) {
         return a.timestamp - b.timestamp;
     });
 
-    // split snr_vs_bytesperminute lists
+    // split snr_vs_filesize lists
     for (let k = 0; k < snr_vs_filesize.length; k++) {
         avgsnr_list[k] = format_time(snr_vs_filesize[k].timestamp);
         filesize_list[k] = snr_vs_filesize[k].bytesperminute;
