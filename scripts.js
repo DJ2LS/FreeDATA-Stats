@@ -117,6 +117,8 @@ getData().then(function(data) {
                                 display: true,
                                 text: '[dB]'
                             },
+                            min: -10,
+                            max: 20
                         },
                         y: {
                             beginAtZero: true,
@@ -125,8 +127,7 @@ getData().then(function(data) {
                                 display: true,
                                 text: '[Bytes/min]'
                             },
-                            min: -10,
-                            max: 20,
+
                         }
                     }
                 }
