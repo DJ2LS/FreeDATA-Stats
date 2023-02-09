@@ -227,6 +227,7 @@ new Chart(chartSNRvsNACK, {
             labels: avgsnr_list,
         datasets: [{
             label: 'SNR vs CRC ERROR',
+            labels: ['true', 'false'],
             data: crcerror_list,
             borderWidth: 1
             }]
