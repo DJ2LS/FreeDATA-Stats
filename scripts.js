@@ -111,8 +111,22 @@ getData().then(function(data) {
                 },
                 options: {
                     scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '[dB]'
+                            },
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '[Bytes/min]'
+                            },
+                            min: -10,
+                            max: 20,
                         }
                     }
                 }
@@ -145,8 +159,20 @@ getData().then(function(data) {
                 },
                 options: {
                     scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '[dB]'
+                            },
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '[N]'
+                            },
                         }
                     }
                 }
@@ -179,8 +205,20 @@ getData().then(function(data) {
                 },
                 options: {
                     scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '[dB]'
+                            },
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '[Bytes]'
+                            },
                         }
                     }
                 }
@@ -215,20 +253,20 @@ getData().then(function(data) {
                     },
                     options: {
                         scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: '[Bytes]'
+                                },
+                            },
                             y: {
                                 beginAtZero: true,
+                                display: true,
                                 title: {
                                     display: true,
                                     text: '[Bytes/min]'
                                 },
-                            x: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: '[Bytes]'
-                                    },
-                                }
-
                             }
 
                         }
@@ -266,8 +304,20 @@ getData().then(function(data) {
                     },
                     options: {
                         scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: '[Timestamp]'
+                                },
+                            },
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: '[Bytes/min]'
+                                },
                             }
                         }
                     }
@@ -305,8 +355,20 @@ getData().then(function(data) {
                     },
                     options: {
                         scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: '[dB]'
+                                },
+                            },
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: '[True/False]'
+                                },
                             }
                         }
                     }
