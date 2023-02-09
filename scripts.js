@@ -116,9 +116,7 @@ getData().then(function(data) {
                             title: {
                                 display: true,
                                 text: '[dB]'
-                            },
-                            min: -10,
-                            max: 20
+                            }
                         },
                         y: {
                             beginAtZero: true,
