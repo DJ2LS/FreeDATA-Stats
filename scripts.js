@@ -211,7 +211,7 @@ new Chart(chartSNRvsNACK, {
 
     // sort time_vs_bytesperminute lists
     snr_vs_crcerror.sort(function(a, b) {
-        return a.timestamp - b.timestamp;
+        return a.avgsnr - b.avgsnr;
     });
 
     // split snr_vs_bytesperminute lists
