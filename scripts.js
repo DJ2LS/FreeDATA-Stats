@@ -107,7 +107,7 @@ getData().then(function(data){
 
     // sort snr_vs_nack lists
     snr_vs_nack.sort(function(a, b) {
-        return a.avgsnr > b.avgsnr;
+        return a.avgsnr - b.avgsnr;
     });
 
     // split snr_vs_nack lists
@@ -199,7 +199,17 @@ new Chart(chartSNRvsNACK, {
     options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '[Bytes/min]'
+                    },
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '[Bytes]'
+                        },
                 }
             }
         }
@@ -221,6 +231,7 @@ new Chart(chartSNRvsNACK, {
 
     }
 
+
     new Chart(chartSNRvsCRCERROR, {
         type: 'category',
     data: {
@@ -240,6 +251,7 @@ new Chart(chartSNRvsNACK, {
             }
         }
     });
+
 
 
 
