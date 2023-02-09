@@ -393,3 +393,30 @@ getData().then(function(data) {
             bytesperminute_list = [];
             filesize_list = [];
 }
+
+
+function getGridFromCall(callsign) {
+    // function for checking if we have gridsquare information available
+    return $.getJSON({
+        url: 'https://api.freedata.app/explorer.php',
+        type: 'GET',
+        dataType: 'jsonp',
+        error: function(xhr, status, error) {
+            console.log(error)
+        },
+        success: function(data) {
+
+            for (let i = 0; i < data.length; i++) {
+                if(data[i]['callsign'] === callsign){
+                    return data[i]['gridsquare'];
+                }
+
+                if(data[i]['dxcallsign'] === callsign){
+                    return data[i]['dxgridsquare'];
+                }
+            }
+
+        return false
+        }
+    });
+}
