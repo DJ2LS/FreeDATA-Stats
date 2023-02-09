@@ -31,7 +31,8 @@ return $.getJSON({
         let timestamp = data[i]['timestamp'];
         let filesize = data[i]['filesize'];
         let bytesperminute = data[i]['bytesperminute'];
-		
+        let crcerror = data[i]['crcerror'];
+
 		// create snr_vs_nack
 		snr_vs_nack.push({'avgsnr': avgsnr, 'nack': nack});
 
