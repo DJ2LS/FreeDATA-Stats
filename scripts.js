@@ -46,6 +46,9 @@ function getData() {
                 let version = data[i]["version"];
                 let version_splitted = parseInt(version.split('.')[1], 10)
 
+                let status = data[i]["status"];
+
+
                 // unique list of callsigns
                 let callsign = data[i]["callsign"]
                 raw_unique_callsings.add(callsign);
@@ -58,9 +61,9 @@ function getData() {
 
                 // raw bytesperminute list
                 raw_bytesperminute_list.push(bytesperminute);
-
+ 
                 // raw crc check for version after fix
-                if(crcerror === 'True' && version_splitted >= 8){
+                if((crcerror === 'True' || status === "wrong_crc" ) && version_splitted >= 8){
                     raw_crc_errors_after_fix += 1;
                 } else {
                     // count no crc errors after fix for milestone validation
@@ -70,7 +73,7 @@ function getData() {
                  }
 
                 // raw crc check for version after fix
-                if(crcerror === 'True' && version_splitted < 8){
+                if((crcerror === 'True'  || status === "wrong_crc") && version_splitted < 8){
                     raw_crc_errors_before_fix += 1;
                 }
 
@@ -370,7 +373,7 @@ getData().then(function (data) {
   }
 
   new Chart(speedOverTime, {
-    type: "line",
+    type: "bar",
     data: {
       labels: timestamp_list,
       datasets: [
