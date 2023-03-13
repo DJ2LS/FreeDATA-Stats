@@ -1,3 +1,14 @@
+let raw_avgsnr_list = [];
+let raw_filesize_list = [];
+let raw_bytesperminute_list = [];
+
+
+let raw_crc_errors_after_fix = 0;
+let raw_crc_errors_before_fix = 0;
+let raw_no_crc_error = 0;
+
+let raw_unique_callsings = new Set();
+
 let avgsnr_list = [];
 let nack_list = [];
 let timestamp_list = [];
@@ -13,21 +24,55 @@ let speed_vs_filesize = [];
 let snr_vs_crcerror = [];
 
 function getData() {
-  return $.getJSON({
-    url: "https://api.freedata.app/stats.php",
-    type: "GET",
-    dataType: "jsonp",
-    error: function (xhr, status, error) {
-      console.log(error);
-    },
-    success: function (data) {
-      for (let i = 0; i < data.length; i++) {
-        let avgsnr = data[i]["avgsnr"];
-        let nack = data[i]["nacks"];
-        let timestamp = data[i]["timestamp"];
-        let filesize = data[i]["filesize"];
-        let bytesperminute = data[i]["bytesperminute"];
-        let crcerror = data[i]["crcerror"];
+    return $.getJSON({
+        url: "https://api.freedata.app/stats.php",
+        type: "GET",
+        dataType: "jsonp",
+        error: function (xhr, status, error) {
+            console.log(error);
+            },
+        success: function (data) {
+
+
+
+            for (let i = 0; i < data.length; i++) {
+                let avgsnr = parseFloat(data[i]["avgsnr"]);
+                let nack = parseInt(data[i]["nacks"], 10);
+                let timestamp = data[i]["timestamp"];
+                let filesize = parseInt(data[i]["filesize"], 10);
+                let bytesperminute = parseInt(data[i]["bytesperminute"], 10);
+                let crcerror = data[i]["crcerror"];
+
+                let version = data[i]["version"];
+                let version_splitted = parseInt(version.split('.')[1], 10)
+
+                // unique list of callsigns
+                let callsign = data[i]["callsign"]
+                raw_unique_callsings.add(callsign);
+
+                // raw snr list, unsorted, for snr min/max/avg calculation
+                raw_avgsnr_list.push(avgsnr);
+
+                // raw filesize list
+                raw_filesize_list.push(filesize);
+
+                // raw bytesperminute list
+                raw_bytesperminute_list.push(bytesperminute);
+
+                // raw crc check for version after fix
+                if(crcerror === 'True' && version_splitted >= 8){
+                    raw_crc_errors_after_fix += 1;
+                } else {
+                    // count no crc errors after fix for milestone validation
+                    if(version_splitted >= 8){
+                        raw_no_crc_error += 1;
+                    }
+                 }
+
+                // raw crc check for version after fix
+                if(crcerror === 'True' && version_splitted < 8){
+                    raw_crc_errors_before_fix += 1;
+                }
 
         // create snr_vs_nack
         snr_vs_nack.push({
@@ -70,6 +115,50 @@ function getData() {
 }
 
 getData().then(function (data) {
+
+    // ----- header
+
+    // total Records
+    document.getElementById("totalRecords").innerText = data.length;
+
+    // min SNR
+    document.getElementById("lowestSNR").innerText = Math.min.apply(Math, raw_avgsnr_list);
+
+    // max SNR
+    document.getElementById("highestSNR").innerText = Math.max.apply(Math, raw_avgsnr_list);
+
+    // avg SNR
+    let SNRsum = 0
+    for (let x of raw_avgsnr_list){
+        SNRsum += x;
+    }
+    document.getElementById("avgSNR").innerText = (SNRsum / raw_avgsnr_list.length).toFixed(1);
+
+    //crc errors
+    document.getElementById("crcErrorBeforeFix").innerText = raw_crc_errors_before_fix;
+    document.getElementById("crcErrorAfterFix").innerText = raw_crc_errors_after_fix;
+    document.getElementById("noCRCErrorsAfterFix").innerText = raw_no_crc_error;
+
+
+    // unique callsigns
+    document.getElementById("uniqueStations").innerText = raw_unique_callsings.size;
+
+    // average filesize
+    let fsSum = 0
+    for (let x of raw_filesize_list){
+        fsSum += x;
+    }
+    document.getElementById("averageFileSize").innerText = (fsSum / raw_filesize_list.length).toFixed(0);
+
+
+    // average bytesperminute
+    let bpmSum = 0
+    for (let x of raw_bytesperminute_list){
+        bpmSum += x;
+    }
+    document.getElementById("averageBytesPerMinute").innerText = (bpmSum / raw_bytesperminute_list.length).toFixed(0);
+  // ----- statistics
+
   const chartSNRvsSPEED = document.getElementById("chartSNRvsSPEED");
   const chartSNRvsNACK = document.getElementById("chartSNRvsNACK");
   const chartSNRvsFILESIZE = document.getElementById("chartSNRvsFILESIZE");
