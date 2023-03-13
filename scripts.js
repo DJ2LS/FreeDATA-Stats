@@ -1,7 +1,7 @@
 let raw_avgsnr_list = [];
 let raw_filesize_list = [];
 let raw_bytesperminute_list = [];
-
+let raw_total_bytes = 0
 
 let raw_crc_errors_after_fix = 0;
 let raw_crc_errors_before_fix = 0;
@@ -76,6 +76,7 @@ function getData() {
                 if((crcerror === 'True'  || status === "wrong_crc") && version_splitted < 8){
                     raw_crc_errors_before_fix += 1;
                 }
+
 
         // create snr_vs_nack
         snr_vs_nack.push({
@@ -160,6 +161,14 @@ getData().then(function (data) {
         bpmSum += x;
     }
     document.getElementById("averageBytesPerMinute").innerText = (bpmSum / raw_bytesperminute_list.length).toFixed(0);
+
+    // total bytes transmitted
+    let bytesSum = 0
+    for (let x of raw_filesize_list){
+        bytesSum += x;
+    }
+    document.getElementById("totalBytesTransmitted").innerText = formatBytes(bytesSum, 4);
+
   // ----- statistics
 
   const chartSNRvsSPEED = document.getElementById("chartSNRvsSPEED");
@@ -495,4 +504,18 @@ function getGridFromCall(callsign) {
       return false;
     },
   });
+}
+
+
+//https://stackoverflow.com/a/18650828
+function formatBytes(bytes, decimals = 2) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
