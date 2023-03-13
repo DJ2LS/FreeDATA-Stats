@@ -229,7 +229,7 @@ getData().then(function (data) {
   }
 
   new Chart(chartSNRvsNACK, {
-    type: "line",
+    type: "bar",
     data: {
       labels: avgsnr_list,
       datasets: [
@@ -276,7 +276,7 @@ getData().then(function (data) {
   }
 
   new Chart(chartSNRvsFILESIZE, {
-    type: "line",
+    type: "bar",
     data: {
       labels: avgsnr_list,
       datasets: [
@@ -323,7 +323,7 @@ getData().then(function (data) {
   }
 
   new Chart(chartSPEEDvsFILESIZE, {
-    type: "line",
+    type: "bar",
     data: {
       labels: filesize_list,
       datasets: [
