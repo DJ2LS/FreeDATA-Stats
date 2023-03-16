@@ -3,7 +3,7 @@ let raw_avgsnr_list_rounded = [];
 
 let raw_filesize_list = [];
 let raw_bytesperminute_list = [];
-let raw_total_bytes = 0
+let raw_total_bytes = 0;
 
 let raw_crc_errors_after_fix = 0;
 let raw_crc_errors_before_fix = 0;
@@ -27,69 +27,67 @@ let speed_vs_filesize = [];
 let snr_vs_crcerror = [];
 let count_snr = [];
 
-
 function getData() {
-    return $.getJSON({
-        url: "https://api.freedata.app/stats.php",
-        type: "GET",
-        dataType: "jsonp",
-        error: function (xhr, status, error) {
-            console.log(error);
-            },
-        success: function (data) {
+  return $.getJSON({
+    url: "https://api.freedata.app/stats.php",
+    type: "GET",
+    dataType: "jsonp",
+    error: function (xhr, status, error) {
+      console.log(error);
+    },
+    success: function (data) {
+      for (let i = 0; i < data.length; i++) {
+        let avgsnr = parseFloat(data[i]["avgsnr"]);
+        let nack = parseInt(data[i]["nacks"], 10);
+        let timestamp = data[i]["timestamp"];
+        let filesize = parseInt(data[i]["filesize"], 10);
+        let bytesperminute = parseInt(data[i]["bytesperminute"], 10);
+        let crcerror = data[i]["crcerror"];
 
+        let version = data[i]["version"];
+        let version_splitted = parseInt(version.split(".")[1], 10);
 
+        let status = data[i]["status"];
 
-            for (let i = 0; i < data.length; i++) {
-                let avgsnr = parseFloat(data[i]["avgsnr"]);
-                let nack = parseInt(data[i]["nacks"], 10);
-                let timestamp = data[i]["timestamp"];
-                let filesize = parseInt(data[i]["filesize"], 10);
-                let bytesperminute = parseInt(data[i]["bytesperminute"], 10);
-                let crcerror = data[i]["crcerror"];
+        // unique list of callsigns
+        let callsign = data[i]["callsign"];
+        raw_unique_callsings.add(callsign);
 
-                let version = data[i]["version"];
-                let version_splitted = parseInt(version.split('.')[1], 10)
+        // raw snr list, unsorted, for snr min/max/avg calculation
+        raw_avgsnr_list.push(avgsnr);
 
-                let status = data[i]["status"];
+        // raw snr list, unsorted, for snr min/max/avg calculation
+        raw_avgsnr_list_rounded.push(Math.round(avgsnr));
 
+        // unique snr list for counting them
+        raw_unique_snr_rounded.add(Math.round(avgsnr));
 
-                // unique list of callsigns
-                let callsign = data[i]["callsign"]
-                raw_unique_callsings.add(callsign);
+        // raw filesize list
+        raw_filesize_list.push(filesize);
 
-                // raw snr list, unsorted, for snr min/max/avg calculation
-                raw_avgsnr_list.push(avgsnr);
+        // raw bytesperminute list
+        raw_bytesperminute_list.push(bytesperminute);
 
-                // raw snr list, unsorted, for snr min/max/avg calculation
-                raw_avgsnr_list_rounded.push(Math.round(avgsnr));
+        // raw crc check for version after fix
+        if (
+          (crcerror === "True" || status === "wrong_crc") &&
+          version_splitted >= 8
+        ) {
+          raw_crc_errors_after_fix += 1;
+        } else {
+          // count no crc errors after fix for milestone validation
+          if (version_splitted >= 8) {
+            raw_no_crc_error += 1;
+          }
+        }
 
-                // unique snr list for counting them
-                raw_unique_snr_rounded.add(Math.round(avgsnr));
-
-                // raw filesize list
-                raw_filesize_list.push(filesize);
-
-                // raw bytesperminute list
-                raw_bytesperminute_list.push(bytesperminute);
- 
-                // raw crc check for version after fix
-                if((crcerror === 'True' || status === "wrong_crc" ) && version_splitted >= 8){
-                    raw_crc_errors_after_fix += 1;
-                } else {
-                    // count no crc errors after fix for milestone validation
-                    if(version_splitted >= 8){
-                        raw_no_crc_error += 1;
-                    }
-                 }
-
-                // raw crc check for version after fix
-                if((crcerror === 'True'  || status === "wrong_crc") && version_splitted < 8){
-                    raw_crc_errors_before_fix += 1;
-                }
-
-
-
+        // raw crc check for version after fix
+        if (
+          (crcerror === "True" || status === "wrong_crc") &&
+          version_splitted < 8
+        ) {
+          raw_crc_errors_before_fix += 1;
+        }
 
         // create snr_vs_nack
         snr_vs_nack.push({
@@ -126,63 +124,76 @@ function getData() {
           avgsnr: avgsnr,
           crcerror: crcerror,
         });
-
-
       }
     },
   });
 }
 
 getData().then(function (data) {
+  // ----- header
 
-    // ----- header
+  // total Records
+  document.getElementById("totalRecords").innerText = data.length;
 
-    // total Records
-    document.getElementById("totalRecords").innerText = data.length;
+  // min SNR
+  document.getElementById("lowestSNR").innerText = Math.min.apply(
+    Math,
+    raw_avgsnr_list
+  );
 
-    // min SNR
-    document.getElementById("lowestSNR").innerText = Math.min.apply(Math, raw_avgsnr_list);
+  // max SNR
+  document.getElementById("highestSNR").innerText = Math.max.apply(
+    Math,
+    raw_avgsnr_list
+  );
 
-    // max SNR
-    document.getElementById("highestSNR").innerText = Math.max.apply(Math, raw_avgsnr_list);
+  // avg SNR
+  let SNRsum = 0;
+  for (let x of raw_avgsnr_list) {
+    SNRsum += x;
+  }
+  document.getElementById("avgSNR").innerText = (
+    SNRsum / raw_avgsnr_list.length
+  ).toFixed(1);
 
-    // avg SNR
-    let SNRsum = 0
-    for (let x of raw_avgsnr_list){
-        SNRsum += x;
-    }
-    document.getElementById("avgSNR").innerText = (SNRsum / raw_avgsnr_list.length).toFixed(1);
+  //crc errors
+  document.getElementById("crcErrorBeforeFix").innerText =
+    raw_crc_errors_before_fix;
+  document.getElementById("crcErrorAfterFix").innerText =
+    raw_crc_errors_after_fix;
+  document.getElementById("noCRCErrorsAfterFix").innerText = raw_no_crc_error;
 
-    //crc errors
-    document.getElementById("crcErrorBeforeFix").innerText = raw_crc_errors_before_fix;
-    document.getElementById("crcErrorAfterFix").innerText = raw_crc_errors_after_fix;
-    document.getElementById("noCRCErrorsAfterFix").innerText = raw_no_crc_error;
+  // unique callsigns
+  document.getElementById("uniqueStations").innerText =
+    raw_unique_callsings.size;
 
+  // average filesize
+  let fsSum = 0;
+  for (let x of raw_filesize_list) {
+    fsSum += x;
+  }
+  document.getElementById("averageFileSize").innerText = (
+    fsSum / raw_filesize_list.length
+  ).toFixed(0);
 
-    // unique callsigns
-    document.getElementById("uniqueStations").innerText = raw_unique_callsings.size;
+  // average bytesperminute
+  let bpmSum = 0;
+  for (let x of raw_bytesperminute_list) {
+    bpmSum += x;
+  }
+  document.getElementById("averageBytesPerMinute").innerText = (
+    bpmSum / raw_bytesperminute_list.length
+  ).toFixed(0);
 
-    // average filesize
-    let fsSum = 0
-    for (let x of raw_filesize_list){
-        fsSum += x;
-    }
-    document.getElementById("averageFileSize").innerText = (fsSum / raw_filesize_list.length).toFixed(0);
-
-
-    // average bytesperminute
-    let bpmSum = 0
-    for (let x of raw_bytesperminute_list){
-        bpmSum += x;
-    }
-    document.getElementById("averageBytesPerMinute").innerText = (bpmSum / raw_bytesperminute_list.length).toFixed(0);
-
-    // total bytes transmitted
-    let bytesSum = 0
-    for (let x of raw_filesize_list){
-        bytesSum += x;
-    }
-    document.getElementById("totalBytesTransmitted").innerText = formatBytes(bytesSum, 4);
+  // total bytes transmitted
+  let bytesSum = 0;
+  for (let x of raw_filesize_list) {
+    bytesSum += x;
+  }
+  document.getElementById("totalBytesTransmitted").innerText = formatBytes(
+    bytesSum,
+    4
+  );
 
   // ----- statistics
 
@@ -430,81 +441,73 @@ getData().then(function (data) {
     },
   });
 
-
-
-
   // cleanup
-    cleanup();
+  cleanup();
 
-  console.log(raw_avgsnr_list_rounded)
-    console.log(raw_unique_snr_rounded)
+  console.log(raw_avgsnr_list_rounded);
+  console.log(raw_unique_snr_rounded);
 
-    // https://stackoverflow.com/a/5668029
-    let arr = raw_avgsnr_list_rounded
-    var counts = {};
-      for (const num of arr) {
-          counts[num] = counts[num] ? counts[num] + 1 : 1;
-      }
+  // https://stackoverflow.com/a/5668029
+  let arr = raw_avgsnr_list_rounded;
+  var counts = {};
+  for (const num of arr) {
+    counts[num] = counts[num] ? counts[num] + 1 : 1;
+  }
 
-
-    for(const num of raw_unique_snr_rounded){
-        // create snr_vs_crcerror
-        count_snr.push({
-            avgsnr: num,
-            counter: counts[num],
-        });
-    }
-
-
-    // sort count_snr lists
-    count_snr.sort(function (a, b) {
-        return a.avgsnr - b.avgsnr;
+  for (const num of raw_unique_snr_rounded) {
+    // create snr_vs_crcerror
+    count_snr.push({
+      avgsnr: num,
+      counter: counts[num],
     });
+  }
 
-    let snr_list = []
-    let counter_list = []
+  // sort count_snr lists
+  count_snr.sort(function (a, b) {
+    return a.avgsnr - b.avgsnr;
+  });
 
-    // split count_snr lists
-    for (let k = 0; k < count_snr.length; k++) {
-        snr_list[k] = count_snr[k].avgsnr;
-        counter_list[k] = count_snr[k].counter;
-    }
+  let snr_list = [];
+  let counter_list = [];
 
-    new Chart(snrCounter, {
-        type: "bar",
-        data: {
-            labels: snr_list,
-            datasets: [
-                {
-                    label: "SNR histogram",
-                    data: counter_list,
-                    borderWidth: 1,
-                },
-                ],
+  // split count_snr lists
+  for (let k = 0; k < count_snr.length; k++) {
+    snr_list[k] = count_snr[k].avgsnr;
+    counter_list[k] = count_snr[k].counter;
+  }
+
+  new Chart(snrCounter, {
+    type: "bar",
+    data: {
+      labels: snr_list,
+      datasets: [
+        {
+          label: "SNR histogram",
+          data: counter_list,
+          borderWidth: 1,
         },
-        options: {
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: "SNR [dB]",
-                    },
-                },
-                y: {
-                    beginAtZero: true,
-                    display: true,
-                    title: {
-                        display: true,
-                        text: "N",
-                    },
-                },
-            },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: "SNR [dB]",
+          },
         },
-    });
-
-
-
+        y: {
+          beginAtZero: true,
+          display: true,
+          title: {
+            display: true,
+            text: "N",
+          },
+        },
+      },
+    },
+  });
 
   // cleanup
   cleanup();
@@ -555,10 +558,7 @@ getData().then(function (data) {
   });
 
     */
-    });
-
-
-
+});
 
 function format_time(s) {
   const dtFormat = new Intl.DateTimeFormat("en-GB", {
@@ -603,16 +603,15 @@ function getGridFromCall(callsign) {
   });
 }
 
-
 //https://stackoverflow.com/a/18650828
 function formatBytes(bytes, decimals = 2) {
-    if (!+bytes) return '0 Bytes'
+  if (!+bytes) return "0 Bytes";
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }

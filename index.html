@@ -7,102 +7,86 @@
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   </head>
   <body>
+    <nav class="navbar sticky-top bg-light">
+      <div class="container-fluid">
+        <div class="card text-bg-info mb-1" style="max-width: 18rem">
+          <div class="card-header">total records</div>
+          <div class="card-body">
+            <h5 class="card-title" id="totalRecords">---</h5>
+          </div>
+        </div>
 
-<nav class="navbar sticky-top bg-light">
-  <div class="container-fluid">
+        <div class="card text-bg-info mb-1" style="max-width: 18rem">
+          <div class="card-header">total bytes transmitted</div>
+          <div class="card-body">
+            <h5 class="card-title" id="totalBytesTransmitted">---</h5>
+          </div>
+        </div>
 
+        <div class="card text-bg-info mb-1" style="max-width: 18rem">
+          <div class="card-header">unique stations</div>
+          <div class="card-body">
+            <h5 class="card-title" id="uniqueStations">---</h5>
+          </div>
+        </div>
 
+        <div class="card text-bg-primary mb-1" style="max-width: 18rem">
+          <div class="card-header">lowest SNR</div>
+          <div class="card-body">
+            <h5 class="card-title" id="lowestSNR">---</h5>
+          </div>
+        </div>
 
-  <div class="card text-bg-info mb-1" style="max-width: 18rem;">
-  <div class="card-header">total records</div>
-  <div class="card-body">
-    <h5 class="card-title" id="totalRecords">---</h5>
-  </div>
-</div>
+        <div class="card text-bg-primary mb-1" style="max-width: 18rem">
+          <div class="card-header">average SNR</div>
+          <div class="card-body">
+            <h5 class="card-title" id="avgSNR">---</h5>
+          </div>
+        </div>
 
+        <div class="card text-bg-primary mb-1" style="max-width: 18rem">
+          <div class="card-header">highest SNR</div>
+          <div class="card-body">
+            <h5 class="card-title" id="highestSNR">---</h5>
+          </div>
+        </div>
 
-  <div class="card text-bg-info mb-1" style="max-width: 18rem;">
-  <div class="card-header">total bytes transmitted</div>
-  <div class="card-body">
-    <h5 class="card-title" id="totalBytesTransmitted">---</h5>
-  </div>
-</div>
+        <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
+          <div class="card-header">average filesize</div>
+          <div class="card-body">
+            <h5 class="card-title" id="averageFileSize">---</h5>
+          </div>
+        </div>
 
+        <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
+          <div class="card-header">average bytes per minute</div>
+          <div class="card-body">
+            <h5 class="card-title" id="averageBytesPerMinute">---</h5>
+          </div>
+        </div>
 
-  <div class="card text-bg-info mb-1" style="max-width: 18rem;">
-  <div class="card-header">unique stations</div>
-  <div class="card-body">
-    <h5 class="card-title" id="uniqueStations">---</h5>
-  </div>
-</div>
+        <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
+          <div class="card-header">CRC errors (before fix)</div>
+          <div class="card-body">
+            <h5 class="card-title" id="crcErrorBeforeFix">---</h5>
+          </div>
+        </div>
 
+        <div class="card text-bg-danger mb-1" style="max-width: 18rem">
+          <div class="card-header">CRC errors (after fix)</div>
+          <div class="card-body">
+            <h5 class="card-title" id="crcErrorAfterFix">---</h5>
+          </div>
+        </div>
 
-<div class="card text-bg-primary mb-1" style="max-width: 18rem;">
-  <div class="card-header">lowest SNR</div>
-  <div class="card-body">
-    <h5 class="card-title" id="lowestSNR">---</h5>
-  </div>
-</div>
-
-
-<div class="card text-bg-primary mb-1" style="max-width: 18rem;">
-  <div class="card-header">average SNR</div>
-  <div class="card-body">
-    <h5 class="card-title" id="avgSNR">---</h5>
-  </div>
-</div>
-
-<div class="card text-bg-primary mb-1" style="max-width: 18rem;">
-  <div class="card-header">highest SNR</div>
-  <div class="card-body">
-    <h5 class="card-title" id="highestSNR">---</h5>
-  </div>
-</div>
-
-<div class="card text-bg-secondary mb-1" style="max-width: 18rem;">
-  <div class="card-header">average filesize</div>
-  <div class="card-body">
-    <h5 class="card-title" id="averageFileSize">---</h5>
-
-  </div>
-</div>
-
-<div class="card text-bg-secondary mb-1" style="max-width: 18rem;">
-  <div class="card-header">average bytes per minute</div>
-  <div class="card-body">
-    <h5 class="card-title" id="averageBytesPerMinute">---</h5>
-
-  </div>
-</div>
-
-<div class="card text-bg-secondary mb-1" style="max-width: 18rem;">
-  <div class="card-header">CRC errors (before fix)</div>
-  <div class="card-body">
-    <h5 class="card-title" id="crcErrorBeforeFix">---</h5>
-
-  </div>
-</div>
-
-<div class="card text-bg-danger mb-1" style="max-width: 18rem;">
-  <div class="card-header">CRC errors (after fix)</div>
-  <div class="card-body">
-    <h5 class="card-title" id="crcErrorAfterFix">---</h5>
-
-  </div>
-</div>
-
-<div class="card text-bg-success mb-1" style="max-width: 18rem;">
-  <div class="card-header">no CRC errors (after fix)</div>
-  <div class="card-body">
-    <h5 class="card-title" id="noCRCErrorsAfterFix">---</h5>
-
-  </div>
-</div>
-
-
-
-  </div>
-</nav>
+        <div class="card text-bg-success mb-1" style="max-width: 18rem">
+          <div class="card-header">no CRC errors (after fix)</div>
+          <div class="card-body">
+            <h5 class="card-title" id="noCRCErrorsAfterFix">---</h5>
+          </div>
+        </div>
+      </div>
+    </nav>
 
     <div class="container text-center">
       <div class="row">
@@ -132,7 +116,7 @@
         </div>
       </div>
 
-            <div class="row">
+      <div class="row">
         <div class="col">
           <canvas id="chartCountSNR"></canvas>
         </div>
@@ -140,12 +124,7 @@
           <canvas id="empty"></canvas>
         </div>
       </div>
-
-
     </div>
-
-
-
 
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/chartjs/dist/chart.umd.js"></script>
