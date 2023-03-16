@@ -1,4 +1,6 @@
 let raw_avgsnr_list = [];
+let raw_avgsnr_list_rounded = [];
+
 let raw_filesize_list = [];
 let raw_bytesperminute_list = [];
 let raw_total_bytes = 0
@@ -8,6 +10,7 @@ let raw_crc_errors_before_fix = 0;
 let raw_no_crc_error = 0;
 
 let raw_unique_callsings = new Set();
+let raw_unique_snr_rounded = new Set();
 
 let avgsnr_list = [];
 let nack_list = [];
@@ -22,6 +25,8 @@ let time_vs_bytesperminute = [];
 let snr_vs_filesize = [];
 let speed_vs_filesize = [];
 let snr_vs_crcerror = [];
+let count_snr = [];
+
 
 function getData() {
     return $.getJSON({
@@ -56,6 +61,12 @@ function getData() {
                 // raw snr list, unsorted, for snr min/max/avg calculation
                 raw_avgsnr_list.push(avgsnr);
 
+                // raw snr list, unsorted, for snr min/max/avg calculation
+                raw_avgsnr_list_rounded.push(Math.round(avgsnr));
+
+                // unique snr list for counting them
+                raw_unique_snr_rounded.add(Math.round(avgsnr));
+
                 // raw filesize list
                 raw_filesize_list.push(filesize);
 
@@ -76,6 +87,8 @@ function getData() {
                 if((crcerror === 'True'  || status === "wrong_crc") && version_splitted < 8){
                     raw_crc_errors_before_fix += 1;
                 }
+
+
 
 
         // create snr_vs_nack
@@ -113,6 +126,8 @@ function getData() {
           avgsnr: avgsnr,
           crcerror: crcerror,
         });
+
+
       }
     },
   });
@@ -176,6 +191,7 @@ getData().then(function (data) {
   const chartSNRvsFILESIZE = document.getElementById("chartSNRvsFILESIZE");
   const chartSPEEDvsFILESIZE = document.getElementById("chartSPEEDvsFILESIZE");
   const chartSNRvsCRCERROR = document.getElementById("chartSNRvsCRCERROR");
+  const snrCounter = document.getElementById("chartCountSNR");
 
   const speedOverTime = document.getElementById("chartSpeedOverTime");
 
@@ -414,15 +430,91 @@ getData().then(function (data) {
     },
   });
 
+
+
+
+  // cleanup
+    cleanup();
+
+  console.log(raw_avgsnr_list_rounded)
+    console.log(raw_unique_snr_rounded)
+
+    // https://stackoverflow.com/a/5668029
+    let arr = raw_avgsnr_list_rounded
+    var counts = {};
+      for (const num of arr) {
+          counts[num] = counts[num] ? counts[num] + 1 : 1;
+      }
+
+
+    for(const num of raw_unique_snr_rounded){
+        // create snr_vs_crcerror
+        count_snr.push({
+            avgsnr: num,
+            counter: counts[num],
+        });
+    }
+
+
+    // sort count_snr lists
+    count_snr.sort(function (a, b) {
+        return a.avgsnr - b.avgsnr;
+    });
+
+    let snr_list = []
+    let counter_list = []
+
+    // split count_snr lists
+    for (let k = 0; k < count_snr.length; k++) {
+        snr_list[k] = count_snr[k].avgsnr;
+        counter_list[k] = count_snr[k].counter;
+    }
+
+    new Chart(snrCounter, {
+        type: "bar",
+        data: {
+            labels: snr_list,
+            datasets: [
+                {
+                    label: "SNR histogram",
+                    data: counter_list,
+                    borderWidth: 1,
+                },
+                ],
+        },
+        options: {
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: "SNR [dB]",
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    display: true,
+                    title: {
+                        display: true,
+                        text: "N",
+                    },
+                },
+            },
+        },
+    });
+
+
+
+
   // cleanup
   cleanup();
-
-  // sort time_vs_bytesperminute lists
+  /*
+  // sort lists
   snr_vs_crcerror.sort(function (a, b) {
     return a.avgsnr - b.avgsnr;
   });
 
-  // split snr_vs_bytesperminute lists
+  // split lists
   for (let k = 0; k < snr_vs_crcerror.length; k++) {
     avgsnr_list[k] = snr_vs_crcerror[k].avgsnr;
     crcerror_list[k] = snr_vs_crcerror[k].crcerror;
@@ -461,7 +553,12 @@ getData().then(function (data) {
       },
     },
   });
-});
+
+    */
+    });
+
+
+
 
 function format_time(s) {
   const dtFormat = new Intl.DateTimeFormat("en-GB", {
