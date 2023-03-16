@@ -7,59 +7,45 @@
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   </head>
   <body>
-    <nav class="navbar sticky-top bg-light">
+    <nav class="navbar  bg-light">
       <div class="container-fluid">
         <div class="card text-bg-info mb-1" style="max-width: 18rem">
-          <div class="card-header">total records</div>
+          <div class="card-header">records</div>
           <div class="card-body">
             <h5 class="card-title" id="totalRecords">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-info mb-1" style="max-width: 18rem">
-          <div class="card-header">total bytes transmitted</div>
+          <div class="card-header">bytes transmitted</div>
           <div class="card-body">
             <h5 class="card-title" id="totalBytesTransmitted">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-info mb-1" style="max-width: 18rem">
-          <div class="card-header">unique stations</div>
+          <div class="card-header">stations</div>
           <div class="card-body">
             <h5 class="card-title" id="uniqueStations">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-primary mb-1" style="max-width: 18rem">
-          <div class="card-header">lowest SNR</div>
+          <div class="card-header">SNR (min/avg/max)</div>
           <div class="card-body">
-            <h5 class="card-title" id="lowestSNR">---</h5>
-          </div>
-        </div>
-
-        <div class="card text-bg-primary mb-1" style="max-width: 18rem">
-          <div class="card-header">average SNR</div>
-          <div class="card-body">
-            <h5 class="card-title" id="avgSNR">---</h5>
-          </div>
-        </div>
-
-        <div class="card text-bg-primary mb-1" style="max-width: 18rem">
-          <div class="card-header">highest SNR</div>
-          <div class="card-body">
-            <h5 class="card-title" id="highestSNR">---</h5>
+            <h5 class="card-title"><span id="lowestSNR">-</span>/<span id="avgSNR">-</span>/<span id="highestSNR">-</span></h5>
           </div>
         </div>
 
         <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
-          <div class="card-header">average filesize</div>
+          <div class="card-header">avg filesize</div>
           <div class="card-body">
             <h5 class="card-title" id="averageFileSize">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
-          <div class="card-header">average bytes per minute</div>
+          <div class="card-header">avg bpm</div>
           <div class="card-body">
             <h5 class="card-title" id="averageBytesPerMinute">---</h5>
           </div>
