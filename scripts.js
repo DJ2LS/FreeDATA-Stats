@@ -2,6 +2,7 @@ let raw_avgsnr_list = [];
 let raw_avgsnr_list_rounded = [];
 
 let raw_filesize_list = [];
+let raw_filesize_list_rounded = [];
 let raw_bytesperminute_list = [];
 let raw_total_bytes = 0;
 
@@ -11,12 +12,14 @@ let raw_no_crc_error = 0;
 
 let raw_unique_callsings = new Set();
 let raw_unique_snr_rounded = new Set();
+let raw_unique_filesize_rounded = new Set();
 
 let avgsnr_list = [];
 let nack_list = [];
 let timestamp_list = [];
 let bytesperminute_list = [];
 let filesize_list = [];
+let filesize_counter_list = [];
 let crcerror_list = [];
 
 let snr_vs_nack = [];
@@ -26,6 +29,7 @@ let snr_vs_filesize = [];
 let speed_vs_filesize = [];
 let snr_vs_crcerror = [];
 let count_snr = [];
+let count_filesize = [];
 
 function getData() {
   return $.getJSON({
@@ -64,6 +68,14 @@ function getData() {
 
         // raw filesize list
         raw_filesize_list.push(filesize);
+
+        // raw filesize list rounded to nearest 100 bytes
+         let filesize_rounded = Math.round(filesize / 100) * 100;
+         raw_filesize_list_rounded.push(filesize_rounded);
+         raw_unique_filesize_rounded.add(Math.round(filesize / 100) * 100)
+
+
+
 
         // raw bytesperminute list
         raw_bytesperminute_list.push(bytesperminute);
@@ -203,6 +215,7 @@ getData().then(function (data) {
   const chartSPEEDvsFILESIZE = document.getElementById("chartSPEEDvsFILESIZE");
   const chartSNRvsCRCERROR = document.getElementById("chartSNRvsCRCERROR");
   const snrCounter = document.getElementById("chartCountSNR");
+  const filesizeCounter = document.getElementById("chartCountFileSize");
 
   const speedOverTime = document.getElementById("chartSpeedOverTime");
 
@@ -444,6 +457,8 @@ getData().then(function (data) {
   // cleanup
   cleanup();
 
+  // SNR HISTOGRAM
+
   console.log(raw_avgsnr_list_rounded);
   console.log(raw_unique_snr_rounded);
 
@@ -508,6 +523,77 @@ getData().then(function (data) {
       },
     },
   });
+
+  // FILESIZE HISTOGRAM
+    // cleanup
+    cleanup();
+
+    console.log(raw_filesize_list)
+
+    // https://stackoverflow.com/a/5668029
+    arr = raw_filesize_list_rounded;
+    counts = {};
+    for (const num of arr) {
+        counts[num] = counts[num] ? counts[num] + 1 : 1;
+    }
+
+    console.log(raw_unique_filesize_rounded)
+
+    for (const num of raw_unique_filesize_rounded) {
+        // create snr_vs_crcerror
+        count_filesize.push({
+            filesize: num,
+            counter: counts[num],
+        });
+    }
+    console.log(count_filesize)
+    // sort count_snr lists
+    count_filesize.sort(function (a, b) {
+        return a.filesize - b.filesize;
+    });
+
+    let filesize_counter_list = [];
+    counter_list = [];
+
+    // split count_snr lists
+    for (let k = 0; k < count_filesize.length; k++) {
+        filesize_counter_list[k] = count_filesize[k].filesize;
+        counter_list[k] = count_filesize[k].counter;
+    }
+
+    new Chart(filesizeCounter, {
+        type: "bar",
+        data: {
+            labels: filesize_counter_list,
+            datasets: [
+                {
+                    label: "FILESIZE histogram",
+                    data: counter_list,
+                    borderWidth: 1,
+                },
+                ],
+        },
+        options: {
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: "Filesize [Bytes]",
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    display: true,
+                    title: {
+                        display: true,
+                        text: "N",
+                    },
+                },
+            },
+        },
+    });
+
 
   // cleanup
   cleanup();
