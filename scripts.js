@@ -45,16 +45,21 @@ function getData() {
 
 getData().then(function () {
   // Update total bytes transmitted
-  document.getElementById("totalBytesTransmitted").innerText = formatBytes(total_bytes_transmitted, 4);
+  document.getElementById("totalBytesTransmitted").innerText = formatBytes(
+    total_bytes_transmitted,
+    4,
+  );
 
   // ----- SNR Histogram -----
   let snr_histogram = {};
-  raw_avgsnr_list_rounded.forEach(snr => {
+  raw_avgsnr_list_rounded.forEach((snr) => {
     snr_histogram[snr] = (snr_histogram[snr] || 0) + 1;
   });
 
-  let snr_values = Object.keys(snr_histogram).map(Number).sort((a, b) => a - b);
-  let snr_counts = snr_values.map(snr => snr_histogram[snr]);
+  let snr_values = Object.keys(snr_histogram)
+    .map(Number)
+    .sort((a, b) => a - b);
+  let snr_counts = snr_values.map((snr) => snr_histogram[snr]);
 
   new Chart(document.getElementById("chartSNRHistogram"), {
     type: "bar",
@@ -100,8 +105,10 @@ getData().then(function () {
     }
   });
 
-  let speed_snr_values = Object.keys(speed_histogram).map(Number).sort((a, b) => a - b);
-  let speed_averages = speed_snr_values.map(snr => {
+  let speed_snr_values = Object.keys(speed_histogram)
+    .map(Number)
+    .sort((a, b) => a - b);
+  let speed_averages = speed_snr_values.map((snr) => {
     let total = speed_histogram[snr].reduce((sum, value) => sum + value, 0);
     return Math.round(total / speed_histogram[snr].length);
   });
@@ -141,7 +148,9 @@ getData().then(function () {
 
   // ----- Version Distribution -----
   let version_values = Object.keys(version_distribution);
-  let version_counts = version_values.map(version => version_distribution[version]);
+  let version_counts = version_values.map(
+    (version) => version_distribution[version],
+  );
 
   new Chart(document.getElementById("chartVersionDistribution"), {
     type: "bar",
