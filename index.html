@@ -10,21 +10,21 @@
     <nav class="navbar bg-light">
       <div class="container-fluid">
         <div class="card text-bg-info mb-1" style="max-width: 18rem">
-          <div class="card-header">records</div>
+          <div class="card-header">Records</div>
           <div class="card-body">
             <h5 class="card-title" id="totalRecords">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-info mb-1" style="max-width: 18rem">
-          <div class="card-header">bytes transmitted</div>
+          <div class="card-header">Bytes Transmitted</div>
           <div class="card-body">
             <h5 class="card-title" id="totalBytesTransmitted">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-info mb-1" style="max-width: 18rem">
-          <div class="card-header">stations</div>
+          <div class="card-header">Stations</div>
           <div class="card-body">
             <h5 class="card-title" id="uniqueStations">---</h5>
           </div>
@@ -34,46 +34,22 @@
           <div class="card-header">SNR (min/avg/max)</div>
           <div class="card-body">
             <h5 class="card-title">
-              <span id="lowestSNR">-</span>/<span id="avgSNR">-</span>/<span
-                id="highestSNR"
-                >-</span
-              >
+              <span id="lowestSNR">-</span>/<span id="avgSNR">-</span>/<span id="highestSNR">-</span>
             </h5>
           </div>
         </div>
 
         <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
-          <div class="card-header">avg filesize</div>
+          <div class="card-header">Avg Filesize</div>
           <div class="card-body">
             <h5 class="card-title" id="averageFileSize">---</h5>
           </div>
         </div>
 
         <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
-          <div class="card-header">avg bpm</div>
+          <div class="card-header">Avg BPM</div>
           <div class="card-body">
             <h5 class="card-title" id="averageBytesPerMinute">---</h5>
-          </div>
-        </div>
-
-        <div class="card text-bg-secondary mb-1" style="max-width: 18rem">
-          <div class="card-header">CRC errors (before fix)</div>
-          <div class="card-body">
-            <h5 class="card-title" id="crcErrorBeforeFix">---</h5>
-          </div>
-        </div>
-
-        <div class="card text-bg-danger mb-1" style="max-width: 18rem">
-          <div class="card-header">CRC errors (after fix)</div>
-          <div class="card-body">
-            <h5 class="card-title" id="crcErrorAfterFix">---</h5>
-          </div>
-        </div>
-
-        <div class="card text-bg-success mb-1" style="max-width: 18rem">
-          <div class="card-header">no CRC errors (after fix)</div>
-          <div class="card-body">
-            <h5 class="card-title" id="noCRCErrorsAfterFix">---</h5>
           </div>
         </div>
       </div>
@@ -82,37 +58,16 @@
     <div class="container text-center">
       <div class="row">
         <div class="col">
-          <canvas id="chartSNRvsSPEED"></canvas>
+          <canvas id="chartSNRHistogram"></canvas>
         </div>
         <div class="col">
-          <canvas id="chartSNRvsNACK"></canvas>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <canvas id="chartSNRvsFILESIZE"></canvas>
-        </div>
-        <div class="col">
-          <canvas id="chartSPEEDvsFILESIZE"></canvas>
+          <canvas id="chartSpeedHistogram"></canvas>
         </div>
       </div>
 
       <div class="row">
         <div class="col">
-          <canvas id="chartSpeedOverTime"></canvas>
-        </div>
-        <div class="col">
-          <canvas id="chartSNRvsCRCERROR"></canvas>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <canvas id="chartCountSNR"></canvas>
-        </div>
-        <div class="col">
-          <canvas id="chartCountFileSize"></canvas>
+          <canvas id="chartVersionDistribution"></canvas>
         </div>
       </div>
     </div>
